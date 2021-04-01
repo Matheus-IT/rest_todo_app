@@ -1,18 +1,19 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 
 from .models import Todo
 from .serializers import TodoSerializer
 
 
-@api_view(['GET', 'POST'])
-def todo_list(request):
-	if request.method == 'GET':
+class TodoListAndCreate(APIView):
+	def get(self, request):
 		todo = Todo.objects.all()
 		serialized = TodoSerializer(todo, many=True)
 		return Response(serialized.data)
-	elif request.method == 'POST':
+	
+	def post(self, request):
 		serialized = TodoSerializer(data=request.data)
 
 		if serialized.is_valid():
