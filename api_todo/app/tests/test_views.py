@@ -6,7 +6,7 @@ from ..models import Todo
 from ..serializers import TodoSerializer
 
 
-class TodoListAndCreate(APITestCase):
+class TodoListAndCreateTests(APITestCase):
 	def setUp(self):
 		self.AMOUNT_CREATED = 5
 
