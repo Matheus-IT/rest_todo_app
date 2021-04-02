@@ -1,16 +1,9 @@
-from rest_framework import status, generics
-from rest_framework.exceptions import NotFound
-from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
-from .models import Todo
-from .serializers import TodoSerializer
+from .models import Task
+from .serializers import TaskSerializer
 
 
-class TodoListAndCreate(generics.ListCreateAPIView):
-	queryset = Todo.objects.all()
-	serializer_class = TodoSerializer
-
-
-class TodoDetailChangeAndDelete(generics.RetrieveUpdateDestroyAPIView):
-	queryset = Todo.objects.all()
-	serializer_class = TodoSerializer
+class TaskViewSet(ModelViewSet):
+	queryset = Task.objects.all()
+	serializer_class = TaskSerializer
