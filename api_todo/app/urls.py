@@ -1,9 +1,7 @@
-from django.urls import path
+from .views import TaskViewSet
+from rest_framework.routers import DefaultRouter
 
-from .views import todo_list, todo_detail_change_and_delete
+router = DefaultRouter()
+router.register(r'', TaskViewSet)
 
-
-urlpatterns = [
-	path('', todo_list),
-	path('<int:pk>/', todo_detail_change_and_delete),
-]
+urlpatterns = router.urls
