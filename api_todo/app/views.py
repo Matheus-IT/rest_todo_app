@@ -1,6 +1,6 @@
 from rest_framework import status
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 
 from .models import Todo
@@ -22,23 +22,28 @@ class TodoListAndCreate(APIView):
 		return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def todo_detail_change_and_delete(request, pk):
-	try:
-		todo = Todo.objects.get(pk=pk)
-	except Todo.DoesNotExist:
-		return Response(status=status.HTTP_404_NOT_FOUND)
-	
-	if request.method == 'GET':
+class TodoDetailChangeAndDelete(APIView):
+	def get_object(self, pk):
+		try:
+			return Todo.objects.get(pk=pk)
+		except Todo.DoesNotExist:
+			raise NotFound()
+
+	def get(self, request, pk):
+		todo = self.get_object(pk)
 		serialized = TodoSerializer(todo)
 		return Response(serialized.data)
-	elif request.method == 'PUT':
+
+	def put(self, request, pk):
+		todo = self.get_object(pk)
 		serialized = TodoSerializer(todo, data=request.data)
-		
+
 		if serialized.is_valid():
 			serialized.save()
 			return Response(serialized.data)
 		return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
-	elif request.method == 'DELETE':
+	
+	def delete(self, request, pk):
+		todo = self.get_object(pk)
 		todo.delete()
 		return Response(status=status.HTTP_204_NO_CONTENT)
