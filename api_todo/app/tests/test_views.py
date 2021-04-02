@@ -56,7 +56,7 @@ class TodoDetailChangeAndDeleteTests(APITestCase):
 		response = self.client.get(reverse('tasks-detail', kwargs={'pk': 999}))
 		self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-	def test_put_updating_task(self):
+	def test_put_updating_task_name(self):
 		data = {
 			'name': 'This is a new name for testing purposes'
 		}
@@ -64,6 +64,16 @@ class TodoDetailChangeAndDeleteTests(APITestCase):
 		
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertEqual(response.data['name'], data['name'])
+	
+	def test_put_updating_task_to_done(self):
+		data = {
+			'name': 'This is a new name for testing purposes',
+			'done': True
+		}
+		response = self.client.put(reverse('tasks-detail', kwargs={'pk': 1}), data=data)
+		
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['done'], data['done'])
 
 	def test_put_updating_invalid_task(self):
 		""" Updating data of nonexisting task """
