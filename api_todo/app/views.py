@@ -1,25 +1,16 @@
-from rest_framework import status
+from rest_framework import status, generics
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 
 from .models import Todo
 from .serializers import TodoSerializer
 
 
-class TodoListAndCreate(APIView):
-	def get(self, request):
-		todo = Todo.objects.all()
-		serialized = TodoSerializer(todo, many=True)
-		return Response(serialized.data)
-	
-	def post(self, request):
-		serialized = TodoSerializer(data=request.data)
-
-		if serialized.is_valid():
-			serialized.save()
-			return Response(serialized.data, status=status.HTTP_201_CREATED)
-		return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+class TodoListAndCreate(generics.ListCreateAPIView):
+	queryset = Todo.objects.all()
+	serializer_class = TodoSerializer
 
 
 class TodoDetailChangeAndDelete(APIView):
